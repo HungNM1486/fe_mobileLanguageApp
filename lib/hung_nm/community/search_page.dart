@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:language_app/models/post_model.dart';
 import 'package:language_app/service/post_service.dart';
 import 'package:language_app/service/language_service.dart';
-import 'forum_detail_page.dart';
+import 'package:language_app/utils/toast_helper.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:cached_network_image/cached_network_image.dart';
+import 'widgets/forum_post_card.dart';
+import 'likes_list_page.dart';
+import 'gallery_viewer.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -214,8 +216,6 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -351,127 +351,42 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildPostCard(PostModel post) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    return ForumPostCard(
+      post: post,
+      expandable: true,
+      onPostDeleted: () {
+        _search(); // Tải lại kết quả tìm kiếm
+      },
+      onImageTap: (imageUrls, initialIndex) {
+        _openGallery(imageUrls, initialIndex);
+      },
+      onLikesViewTap: (post) {
+        if ((post.likes?.length ?? 0) > 0) {
+          ToastHelper.showInfo(
+              context, 'Xem ${post.likes?.length} người đã thích bài viết');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LikesListPage(post: post),
+            ),
+          );
+        }
+      },
+    );
+  }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      elevation: 2,
-      child: InkWell(
-        onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => ForumDetailPage(post: post))),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Thông tin người đăng
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage:
-                        post.userAvatar != null && post.userAvatar!.isNotEmpty
-                            ? CachedNetworkImageProvider(post.userAvatar!)
-                            : null,
-                    child: post.userAvatar == null || post.userAvatar!.isEmpty
-                        ? const Icon(Icons.person, size: 16)
-                        : null,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          post.userName ?? 'Người dùng ẩn danh',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                        if (post.createdAt != null)
-                          Text(
-                            timeago.format(post.createdAt!, locale: 'vi'),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+  // Mở gallery xem ảnh
+  void _openGallery(List<String> imageUrls, int initialIndex) {
+    // Hiển thị thông báo hướng dẫn
+    ToastHelper.showInfo(
+        context, 'Vuốt để xem ảnh khác, chạm để đóng/mở điều khiển');
 
-              const SizedBox(height: 8),
-
-              // Tiêu đề bài viết
-              Text(
-                post.title ?? 'Không có tiêu đề',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              const SizedBox(height: 4),
-
-              // Nội dung bài viết
-              Text(
-                post.content ?? 'Không có nội dung',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              const SizedBox(height: 8),
-
-              // Hiển thị tags nếu có
-              if (post.tags != null && post.tags!.isNotEmpty)
-                Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: post.tags!.map((tag) {
-                    return Chip(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      label: Text(
-                        '#$tag',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      padding: EdgeInsets.zero,
-                      labelPadding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 0),
-                    );
-                  }).toList(),
-                ),
-
-              const SizedBox(height: 8),
-
-              // Thông tin tương tác
-              Row(
-                children: [
-                  Icon(Icons.favorite, size: 16, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${post.likes?.length ?? 0}',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                  const SizedBox(width: 16),
-                  Icon(Icons.comment, size: 16, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${post.comments?.length ?? 0}',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ModernGallery(
+          imageUrls: imageUrls,
+          initialIndex: initialIndex,
         ),
       ),
     );

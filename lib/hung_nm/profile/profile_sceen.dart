@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:language_app/models/user_model.dart';
-import 'package:language_app/models/achievement_model.dart';
 import 'package:language_app/provider/achievement_provider.dart';
 import 'package:language_app/provider/post_provider.dart';
-import 'package:language_app/models/post_model.dart';
+import 'package:language_app/utils/toast_helper.dart';
 import 'activity.dart';
 import 'package:language_app/provider/user_provider.dart';
 import 'package:language_app/res/imagesLA/AppImages.dart';
@@ -14,7 +13,9 @@ import 'friends_list_screen.dart';
 import 'package:provider/provider.dart';
 import 'qr_scanner_screen.dart';
 import 'share_optiones.dart';
-import 'package:language_app/hung_nm/community/forum_detail_page.dart';
+import 'package:language_app/hung_nm/community/widgets/forum_post_card.dart';
+import 'package:language_app/hung_nm/community/likes_list_page.dart';
+import 'package:language_app/hung_nm/community/gallery_viewer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -767,8 +768,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                 );
               }
 
-              // Tôi đa 10 bài
-              final displayedPosts = postProvider.posts.take(10).toList();
+              // Tối đa 5 bài (để không làm quá dài màn hình)
+              final displayedPosts = postProvider.posts.take(5).toList();
 
               return ListView.separated(
                 shrinkWrap: true,
@@ -777,97 +778,40 @@ class _ProfileScreenState extends State<ProfileScreen>
                 separatorBuilder: (context, index) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final post = displayedPosts[index];
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ForumDetailPage(post: post),
-                        ),
-                      ).then((_) {
-                        // Tải lại bài viết sau khi quay lại
-                        Provider.of<PostProvider>(context, listen: false)
-                            .fetchMyPosts();
-                      });
+                  return ForumPostCard(
+                    post: post,
+                    expandable: true,
+                    onPostDeleted: () {
+                      // Tải lại bài viết cá nhân
+                      Provider.of<PostProvider>(context, listen: false)
+                          .fetchMyPosts();
                     },
-                    child: Padding(
-                      padding: EdgeInsets.all(15 * pix),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            post.title ?? 'Không có tiêu đề',
-                            style: TextStyle(
-                              fontSize: 16 * pix,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                    onImageTap: (imageUrls, initialIndex) {
+                      _openGallery(imageUrls, initialIndex);
+                    },
+                    onLikesViewTap: (post) {
+                      if ((post.likes?.length ?? 0) > 0) {
+                        ToastHelper.showInfo(context,
+                            'Xem ${post.likes?.length} người đã thích bài viết');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LikesListPage(post: post),
                           ),
-                          SizedBox(height: 5 * pix),
-                          Text(
-                            post.content ?? '',
-                            style: TextStyle(
-                              fontSize: 14 * pix,
-                              color: Colors.grey[600],
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 10 * pix),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.favorite,
-                                color: Colors.red[400],
-                                size: 16 * pix,
-                              ),
-                              SizedBox(width: 5 * pix),
-                              Text(
-                                '${post.likes?.length ?? 0}',
-                                style: TextStyle(
-                                  fontSize: 12 * pix,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              SizedBox(width: 15 * pix),
-                              Icon(
-                                Icons.comment,
-                                color: Colors.blue[400],
-                                size: 16 * pix,
-                              ),
-                              SizedBox(width: 5 * pix),
-                              Text(
-                                '${post.comments?.length ?? 0}',
-                                style: TextStyle(
-                                  fontSize: 12 * pix,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                '${_formatDate(post.createdAt)}',
-                                style: TextStyle(
-                                  fontSize: 12 * pix,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                        );
+                      }
+                    },
                   );
                 },
               );
             },
           ),
-          if (Provider.of<PostProvider>(context).posts.length > 3)
+          if (Provider.of<PostProvider>(context).posts.length > 5)
             Padding(
               padding: EdgeInsets.all(15 * pix),
               child: Center(
                 child: Text(
-                  'Đang hiển thị ${Provider.of<PostProvider>(context).posts.length > 10 ? 10 : Provider.of<PostProvider>(context).posts.length} bài viết mới nhất',
+                  'Đang hiển thị 5 bài viết mới nhất',
                   style: TextStyle(
                     fontSize: 14 * pix,
                     color: Colors.grey[500],
@@ -881,23 +825,20 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  // Hàm định dạng thời gian
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
+  // Mở gallery xem ảnh
+  void _openGallery(List<String> imageUrls, int initialIndex) {
+    // Hiển thị thông báo hướng dẫn
+    ToastHelper.showInfo(
+        context, 'Vuốt để xem ảnh khác, chạm để đóng/mở điều khiển');
 
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays > 30) {
-      return '${date.day}/${date.month}/${date.year}';
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays} ngày trước';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} giờ trước';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} phút trước';
-    } else {
-      return 'Vừa xong';
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ModernGallery(
+          imageUrls: imageUrls,
+          initialIndex: initialIndex,
+        ),
+      ),
+    );
   }
 }

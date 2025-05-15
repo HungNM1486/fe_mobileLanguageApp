@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:language_app/models/notification_model.dart';
 import 'package:language_app/widget/top_bar.dart';
 import 'package:language_app/provider/post_provider.dart';
-import 'package:language_app/hung_nm/community/forum_detail_page.dart';
+import 'package:language_app/hung_nm/community/widgets/forum_post_card.dart';
+import 'package:language_app/hung_nm/community/gallery_viewer.dart';
+import 'package:language_app/hung_nm/community/likes_list_page.dart';
+import 'package:language_app/utils/toast_helper.dart';
 import 'package:provider/provider.dart';
 
 class NotificationDetailscreen extends StatelessWidget {
@@ -182,12 +185,58 @@ class NotificationDetailscreen extends StatelessWidget {
             Navigator.pop(context);
 
             if (success && postProvider.postDetail != null) {
-              // Điều hướng đến trang chi tiết bài viết
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ForumDetailPage(post: postProvider.postDetail!),
+              // Hiển thị dialog với post card
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => Container(
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: Text('Bài viết'),
+                        centerTitle: true,
+                        elevation: 0,
+                      ),
+                      body: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ForumPostCard(
+                              post: postProvider.postDetail!,
+                              expandable: true,
+                              showCommentsSection: true,
+                              onImageTap: (imageUrls, initialIndex) {
+                                _openGallery(context, imageUrls, initialIndex);
+                              },
+                              onLikesViewTap: (post) {
+                                if ((post.likes?.length ?? 0) > 0) {
+                                  ToastHelper.showInfo(context,
+                                      'Xem ${post.likes?.length} người đã thích bài viết');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LikesListPage(post: post),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               );
             } else {
@@ -217,6 +266,24 @@ class NotificationDetailscreen extends StatelessWidget {
 
     // Không hiển thị nút nếu không phải comment notification
     return SizedBox.shrink();
+  }
+
+  // Mở gallery xem ảnh
+  void _openGallery(
+      BuildContext context, List<String> imageUrls, int initialIndex) {
+    // Hiển thị thông báo hướng dẫn
+    ToastHelper.showInfo(
+        context, 'Vuốt để xem ảnh khác, chạm để đóng/mở điều khiển');
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ModernGallery(
+          imageUrls: imageUrls,
+          initialIndex: initialIndex,
+        ),
+      ),
+    );
   }
 
   Widget _buildAdditionalInfo(BuildContext context, double pix) {

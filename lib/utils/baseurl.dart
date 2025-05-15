@@ -10,13 +10,13 @@ class UrlUtils {
   static String getBaseUrl() {
     switch (CURRENT_ENV) {
       case PRODUCTION:
-        return "http://172.11.250.156:3000/"; // URL chính thức
+        return "http://192.168.1.17:3000/"; // URL chính thức
       case DEVELOPMENT:
-        return "http://172.11.250.156:3000/"; // URL phát triển/staging
+        return "http://192.168.1.17:3000/"; // URL phát triển/staging
       case PERSONAL:
-        return "http://172.11.250.156:3000/"; // URL môi trường cá nhân của bạn
+        return "http://192.168.1.17:3000/"; // URL môi trường cá nhân của bạn
       default:
-        return "http://172.11.250.156:3000/"; // Mặc định về môi trường chính
+        return "http://192.168.1.17:3000/"; // Mặc định về môi trường chính
     }
   }
 

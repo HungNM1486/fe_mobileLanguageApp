@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:language_app/models/post_model.dart';
 import 'package:language_app/service/post_service.dart';
-import 'forum_detail_page.dart';
+import 'package:language_app/utils/toast_helper.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:cached_network_image/cached_network_image.dart';
+import 'likes_list_page.dart';
+import 'gallery_viewer.dart';
+import 'widgets/forum_post_card.dart';
 
 class TopicPage extends StatefulWidget {
   final String topic;
@@ -192,153 +194,42 @@ class _TopicPageState extends State<TopicPage> {
   Widget _buildPostCard(PostModel post) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.withOpacity(0.2), width: 1),
-      ),
-      child: InkWell(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ForumDetailPage(post: post)),
-        ),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Phần header với avatar và tên người dùng
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.grey[200],
-                    backgroundImage:
-                        post.userAvatar != null && post.userAvatar!.isNotEmpty
-                            ? NetworkImage(post.userAvatar!)
-                            : null,
-                    child: post.userAvatar == null || post.userAvatar!.isEmpty
-                        ? Text(
-                            (post.userName ?? 'U')
-                                .substring(0, 1)
-                                .toUpperCase(),
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        : null,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          post.userName ?? 'Người dùng ẩn danh',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          post.createdAt != null
-                              ? timeago.format(post.createdAt!, locale: 'vi')
-                              : '',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return ForumPostCard(
+      post: post,
+      expandable: true,
+      onPostDeleted: () {
+        _refreshData(); // Làm mới dữ liệu khi xóa bài
+      },
+      onImageTap: (imageUrls, initialIndex) {
+        _openGallery(imageUrls, initialIndex);
+      },
+      onLikesViewTap: (post) {
+        if ((post.likes?.length ?? 0) > 0) {
+          ToastHelper.showInfo(
+              context, 'Xem ${post.likes?.length} người đã thích bài viết');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LikesListPage(post: post),
+            ),
+          );
+        }
+      },
+    );
+  }
 
-              const SizedBox(height: 10),
+  // Mở gallery xem ảnh
+  void _openGallery(List<String> imageUrls, int initialIndex) {
+    // Hiển thị thông báo hướng dẫn
+    ToastHelper.showInfo(
+        context, 'Vuốt để xem ảnh khác, chạm để đóng/mở điều khiển');
 
-              // Tiêu đề bài viết
-              Text(
-                post.title ?? 'Không có tiêu đề',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              const SizedBox(height: 6),
-
-              // Nội dung bài viết
-              Text(
-                post.content ?? 'Không có nội dung',
-                style: TextStyle(
-                  color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
-                  fontSize: 14,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              // Hình ảnh bài viết (nếu có)
-              if (post.imageUrls != null && post.imageUrls!.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    imageUrl: post.imageUrls!.first,
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey[300],
-                      height: 140,
-                      child: const Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[300],
-                      height: 140,
-                      child: Icon(Icons.error, color: Colors.grey[500]),
-                    ),
-                  ),
-                ),
-              ],
-
-              const SizedBox(height: 10),
-
-              // Footer với thông tin like, comment
-              Row(
-                children: [
-                  Icon(Icons.favorite, color: Colors.pink, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${post.likes?.length ?? 0}',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                  ),
-                  const SizedBox(width: 16),
-                  Icon(Icons.comment, color: Colors.blue, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${post.comments?.length ?? 0}',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ModernGallery(
+          imageUrls: imageUrls,
+          initialIndex: initialIndex,
         ),
       ),
     );
