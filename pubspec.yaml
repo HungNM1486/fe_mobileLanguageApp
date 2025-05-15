@@ -1,0 +1,70 @@
+name: language_app
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations: 
+    sdk: flutter 
+  cupertino_icons: ^1.0.8
+  audioplayers: ^6.4.0
+  http: ^1.3.0
+  flutter_tts: ^4.2.2
+  speech_to_text: ^7.0.0
+  string_similarity: ^2.1.1
+  permission_handler: ^11.4.0
+  shared_preferences: ^2.5.2
+  flutter_riverpod: ^2.6.1
+  qr_flutter: ^4.0.0
+  share_plus: ^7.0.0
+  clipboard: ^0.1.3
+  flutter_local_notifications: ^17.2.2
+  fl_chart: ^0.68.0  # Package để vẽ biểu đồ
+  flutter_svg: ^2.0.17
+  flutter_staggered_grid_view: ^0.7.0  # Dành cho hiển thị dạng lưới với kích thước linh hoạt
+  cached_network_image: ^3.4.1
+  timeago: ^3.5.0
+  image_picker: ^1.1.2
+  provider: ^6.1.4
+  flutter_native_splash: ^2.4.5
+  url_launcher: ^6.3.1
+  confetti: ^0.8.0
+  dio: ^5.8.0+1
+  http_parser: ^4.1.2
+  auto_size_text: ^3.0.0
+  shimmer: ^3.0.0
+  lottie: ^3.3.1
+  animations: ^2.0.11
+  dotted_border: ^2.1.0
+  photo_view: ^0.15.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  intl: ^0.19.0
+
+flutter:
+  generate: true
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - lib/res/imagesLA/
+    - assets/images/iconapp.png
+
+  fonts:
+    - family: BeVietnamPro
+      fonts:
+        - asset: assets/fonts/BeVietnamPro/BeVietnamPro-Regular.ttf
+        - asset: assets/fonts/BeVietnamPro/BeVietnamPro-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/BeVietnamPro/BeVietnamPro-Italic.ttf
+          style: italic

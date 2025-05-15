@@ -1,0 +1,183 @@
+Tài liệu API Diễn đàn (Backend)
+1. Bài viết (Posts)
+1.1. Lấy danh sách bài viết
+Endpoint: GET /posts
+Auth: Không cần
+Tham số:
+page: Số trang (mặc định: 1)
+limit: Số lượng bài viết trên mỗi trang (mặc định: 10)
+languageId: Lọc theo ngôn ngữ
+title: Tìm kiếm theo tiêu đề
+content: Tìm kiếm theo nội dung
+tags: Tìm kiếm theo tags (phân cách bằng dấu phẩy)
+Mô tả: Lấy danh sách bài viết có phân trang và lọc
+1.2. Lấy bài viết phổ biến
+Endpoint: GET /posts/popular
+Auth: Không cần
+Tham số:
+limit: Số lượng bài viết trả về (mặc định: 10)
+Mô tả: Lấy danh sách bài viết phổ biến dựa trên số lượt thích và bình luận
+1.3. Lấy bài viết xu hướng
+Endpoint: GET /posts/trending
+Auth: Không cần
+Tham số:
+days: Số ngày gần đây (mặc định: 7)
+limit: Số lượng bài viết trả về (mặc định: 10)
+Mô tả: Lấy danh sách bài viết xu hướng trong khoảng thời gian gần đây
+1.4. Lấy bài viết của cá nhân
+Endpoint: GET /posts/my-posts
+Auth: JWT
+Tham số:
+page: Số trang (mặc định: 1)
+limit: Số lượng bài viết trên mỗi trang (mặc định: 10)
+title: Tìm kiếm theo tiêu đề
+tags: Tìm kiếm theo tags
+Mô tả: Lấy danh sách bài viết của người dùng đang đăng nhập
+1.5. Lấy chi tiết bài viết
+Endpoint: GET /posts/:id
+Auth: Không cần
+Tham số:
+id: ID của bài viết
+Mô tả: Lấy thông tin chi tiết của một bài viết
+1.6. Tạo bài viết mới
+Endpoint: POST /posts
+Auth: JWT
+Body: (multipart/form-data)
+title: Tiêu đề bài viết
+content: Nội dung bài viết
+languageId: ID của ngôn ngữ
+tags: Tags của bài viết (chuỗi phân cách bằng dấu phẩy)
+files: Mảng file hình ảnh đính kèm (tối đa 5 file)
+Mô tả: Tạo bài viết mới
+1.7. Cập nhật bài viết
+Endpoint: PATCH /posts/:id
+Auth: JWT (chỉ người đăng bài)
+Body: (multipart/form-data)
+title: Tiêu đề bài viết
+content: Nội dung bài viết
+tags: Tags của bài viết (chuỗi phân cách bằng dấu phẩy)
+files: Mảng file hình ảnh đính kèm thêm (tối đa 5 file)
+Mô tả: Cập nhật thông tin bài viết
+1.8. Xóa hình ảnh khỏi bài viết
+Endpoint: DELETE /posts/:id/images/:imageUrl
+Auth: JWT (chỉ người đăng bài)
+Tham số:
+id: ID của bài viết
+imageUrl: URL của hình ảnh cần xóa
+Mô tả: Xóa một hình ảnh khỏi bài viết
+1.9. Xóa bài viết
+Endpoint: DELETE /posts/:id
+Auth: JWT (chỉ người đăng bài)
+Tham số:
+id: ID của bài viết
+Mô tả: Xóa bài viết
+2. Bình luận (Comments)
+2.1. Lấy tất cả bình luận
+Endpoint: GET /post-comments
+Auth: Không cần
+Mô tả: Lấy danh sách tất cả bình luận
+2.2. Lấy bình luận theo bài viết
+Endpoint: GET /post-comments/post/:postId
+Auth: Không cần
+Tham số:
+postId: ID của bài viết
+Mô tả: Lấy tất cả bình luận của một bài viết
+2.3. Lấy chi tiết bình luận
+Endpoint: GET /post-comments/:id
+Auth: Không cần
+Tham số:
+id: ID của bình luận
+Mô tả: Lấy thông tin chi tiết của một bình luận
+2.4. Tạo bình luận mới
+Endpoint: POST /post-comments
+Auth: JWT
+Body:
+postId: ID của bài viết
+content: Nội dung bình luận
+Mô tả: Tạo bình luận mới cho bài viết
+2.5. Cập nhật bình luận
+Endpoint: PATCH /post-comments/:id
+Auth: JWT
+Tham số:
+id: ID của bình luận
+Body:
+content: Nội dung bình luận mới
+Mô tả: Cập nhật nội dung bình luận
+2.6. Xóa bình luận
+Endpoint: DELETE /post-comments/:id
+Auth: JWT
+Tham số:
+id: ID của bình luận
+Mô tả: Xóa bình luận
+3. Lượt thích (Likes)
+3.1. Lấy tất cả lượt thích
+Endpoint: GET /post-likes
+Auth: Không cần
+Mô tả: Lấy danh sách tất cả lượt thích bài viết
+3.2. Lấy chi tiết lượt thích
+Endpoint: GET /post-likes/:id
+Auth: Không cần
+Tham số:
+id: ID của lượt thích
+Mô tả: Lấy thông tin chi tiết của một lượt thích
+3.3. Thích bài viết
+Endpoint: POST /post-likes
+Auth: JWT
+Body:
+postId: ID của bài viết
+Mô tả: Thêm lượt thích vào bài viết
+3.4. Xóa lượt thích
+Endpoint: DELETE /post-likes/:id
+Auth: JWT
+Tham số:
+id: ID của lượt thích
+Mô tả: Xóa lượt thích
+4. Báo cáo bài viết (Post Reports)
+4.1. Lấy danh sách báo cáo
+Endpoint: GET /post-reports
+Auth: JWT (Admin)
+Tham số:
+page: Số trang (mặc định: 1)
+limit: Số lượng báo cáo trên mỗi trang (mặc định: 10)
+Mô tả: Lấy danh sách tất cả báo cáo bài viết (chỉ dành cho admin)
+4.2. Lấy báo cáo của người dùng hiện tại
+Endpoint: GET /post-reports/my-reports
+Auth: JWT
+Tham số:
+page: Số trang (mặc định: 1)
+limit: Số lượng báo cáo trên mỗi trang (mặc định: 10)
+Mô tả: Lấy danh sách báo cáo của người dùng hiện tại
+4.3. Lấy báo cáo theo bài viết
+Endpoint: GET /post-reports/post/:postId
+Auth: JWT (Admin)
+Tham số:
+postId: ID của bài viết
+Mô tả: Lấy tất cả báo cáo của một bài viết (chỉ dành cho admin)
+4.4. Lấy chi tiết báo cáo
+Endpoint: GET /post-reports/:id
+Auth: JWT (Admin)
+Tham số:
+id: ID của báo cáo
+Mô tả: Lấy thông tin chi tiết của một báo cáo (chỉ dành cho admin)
+4.5. Báo cáo bài viết
+Endpoint: POST /post-reports
+Auth: JWT
+Body:
+postId: ID của bài viết
+reason: Lý do báo cáo (enum: 'spam', 'abuse', 'harassment', 'inappropriate', 'copyright', 'other')
+description: Mô tả chi tiết về báo cáo (tùy chọn)
+Mô tả: Báo cáo một bài viết vi phạm
+4.6. Cập nhật trạng thái báo cáo
+Endpoint: PATCH /post-reports/:id
+Auth: JWT (Admin)
+Tham số:
+id: ID của báo cáo
+Body:
+isResolved: Trạng thái xử lý báo cáo
+Mô tả: Cập nhật trạng thái xử lý báo cáo (chỉ dành cho admin)
+4.7. Xóa báo cáo
+Endpoint: DELETE /post-reports/:id
+Auth: JWT (Admin)
+Tham số:
+id: ID của báo cáo
+Mô tả: Xóa báo cáo (chỉ dành cho admin)

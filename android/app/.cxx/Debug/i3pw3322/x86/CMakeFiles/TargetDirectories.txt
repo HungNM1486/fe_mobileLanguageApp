@@ -1,0 +1,2 @@
+/home/hungnm/projects/app/LanguageApp2/android/app/.cxx/Debug/i3pw3322/x86/CMakeFiles/edit_cache.dir
+/home/hungnm/projects/app/LanguageApp2/android/app/.cxx/Debug/i3pw3322/x86/CMakeFiles/rebuild_cache.dir

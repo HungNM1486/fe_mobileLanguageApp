@@ -1,0 +1,1 @@
+/home/hungnm/projects/app/LanguageApp2/build/app/intermediates/cxx/Debug/i3pw3322/obj/arm64-v8a

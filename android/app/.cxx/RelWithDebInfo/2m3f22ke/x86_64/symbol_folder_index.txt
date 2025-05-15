@@ -1,0 +1,1 @@
+/home/hungnm/projects/app/LanguageApp2/build/app/intermediates/cxx/RelWithDebInfo/2m3f22ke/obj/x86_64

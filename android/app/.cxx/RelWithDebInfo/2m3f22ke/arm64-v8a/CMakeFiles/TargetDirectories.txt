@@ -1,0 +1,2 @@
+/home/hungnm/projects/app/LanguageApp2/android/app/.cxx/RelWithDebInfo/2m3f22ke/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/hungnm/projects/app/LanguageApp2/android/app/.cxx/RelWithDebInfo/2m3f22ke/arm64-v8a/CMakeFiles/rebuild_cache.dir
