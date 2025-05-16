@@ -15,9 +15,6 @@ class ActivityScreen extends StatefulWidget {
 
 class _ActivityScreenState extends State<ActivityScreen> {
   String _selectedTimeFilter = 'Ngày';
-  final Color _primaryColor = const Color(0xFF5B7BFE);
-  final Color _secondaryColor = const Color(0xFF20C3AF);
-  final Color _backgroundColor = const Color(0xFFF8FAFF);
   bool _isRefreshing = false;
 
   @override

@@ -63,8 +63,8 @@ class _SearchPageState extends State<SearchPage> {
       setState(() {
         _languageItems = languages.map((language) {
           return DropdownMenuItem<int>(
-            value: int.parse(language.id ?? '0'),
-            child: Text(language.name ?? ''),
+            value: int.parse(language.id),
+            child: Text(language.name),
           );
         }).toList();
 

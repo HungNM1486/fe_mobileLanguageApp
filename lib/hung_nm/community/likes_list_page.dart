@@ -200,7 +200,7 @@ class _LikesListPageState extends State<LikesListPage>
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isDarkMode
-                ? Colors.grey[800]!.withOpacity(0.8)
+                ? Colors.grey[800]!.withAlpha(204) // 0.8 opacity
                 : Colors.grey[100]!,
             shape: BoxShape.circle,
           ),
@@ -218,7 +218,7 @@ class _LikesListPageState extends State<LikesListPage>
           margin: EdgeInsets.only(right: 16),
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: _secondaryColor.withOpacity(0.1),
+            color: _secondaryColor.withAlpha(26), // 0.1 opacity
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -316,7 +316,7 @@ class _LikesListPageState extends State<LikesListPage>
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withAlpha(13), // 0.05 opacity
                   blurRadius: 10,
                   offset: Offset(0, 4),
                 ),
@@ -352,7 +352,7 @@ class _LikesListPageState extends State<LikesListPage>
             Container(
               padding: EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: _secondaryColor.withOpacity(0.1),
+                color: _secondaryColor.withAlpha(26), // 0.1 opacity
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -392,7 +392,7 @@ class _LikesListPageState extends State<LikesListPage>
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: _accentColor.withOpacity(0.3),
+                    color: _accentColor.withAlpha(77), // 0.3 opacity
                     blurRadius: 8,
                     offset: Offset(0, 3),
                   ),
@@ -538,7 +538,7 @@ class _LikesListPageState extends State<LikesListPage>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13), // 0.05 opacity
                 blurRadius: 6,
                 offset: Offset(0, 2),
               ),
@@ -606,7 +606,7 @@ class _LikesListPageState extends State<LikesListPage>
       ),
       color: isDarkMode ? Color(0xFF1A1E30) : Colors.white,
       elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.05),
+      shadowColor: Colors.black.withAlpha(13), // 0.05 opacity
       child: InkWell(
         onTap: () {
           // Add haptic feedback
@@ -625,7 +625,7 @@ class _LikesListPageState extends State<LikesListPage>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withAlpha(13), // 0.05 opacity
                       blurRadius: 5,
                       offset: Offset(0, 2),
                     ),
@@ -686,7 +686,7 @@ class _LikesListPageState extends State<LikesListPage>
               Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _secondaryColor.withOpacity(0.1),
+                  color: _secondaryColor.withAlpha(26), // 0.1 opacity
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

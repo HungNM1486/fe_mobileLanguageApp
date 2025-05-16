@@ -221,100 +221,7 @@ class _CommunityForumPageState extends State<CommunityForumPage>
     super.dispose();
   }
 
-  // Xử lý thích bài viết
-  Future<void> _likePost(PostModel post) async {
-    // Tạo phản hồi xúc giác
-    HapticFeedback.lightImpact();
-
-    // Tránh thích nhiều lần
-    if (_isLiking) return;
-
-    setState(() {
-      _isLiking = true;
-    });
-
-    try {
-      // Kiểm tra xem người dùng đã thích bài viết này chưa
-      final userId = Provider.of<UserProvider>(context, listen: false).user?.id;
-      if (post.likes!.any((like) => like.userId == userId)) {
-        _showSnackBar('Bạn đã thích bài viết này');
-        setState(() {
-          _isLiking = false;
-        });
-        return;
-      }
-
-      // Gọi API thích bài viết
-      final postProvider = Provider.of<PostProvider>(context, listen: false);
-      final success = await postProvider.likePost(int.parse(post.id!));
-
-      if (success) {
-        setState(() {
-          _isLiking = false;
-        });
-        _showSnackBar('Đã thích bài viết');
-      } else {
-        _showSnackBar('Không thể thích bài viết');
-        setState(() {
-          _isLiking = false;
-        });
-      }
-    } catch (e) {
-      _showSnackBar('Lỗi: ${e.toString()}');
-      setState(() {
-        _isLiking = false;
-      });
-    }
-  }
-
-  // Hiển thị SnackBar thông báo với thiết kế mới
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(Icons.info_outline_rounded,
-                  color: Colors.white, size: 20),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        backgroundColor: Color(0xFF5B6EF5),
-        duration: Duration(seconds: 2),
-        margin: EdgeInsets.all(16),
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        elevation: 6,
-        action: SnackBarAction(
-          label: 'OK',
-          textColor: Colors.white,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      ),
-    );
-  }
-
-  // Điều hướng đến trang tạo bài viết
+   // Điều hướng đến trang tạo bài viết
   void _navigateToCreatePost() async {
     // Thêm hiệu ứng haptic
     HapticFeedback.mediumImpact();
@@ -328,22 +235,6 @@ class _CommunityForumPageState extends State<CommunityForumPage>
     if (result == true) {
       _loadData();
     }
-  }
-
-  // Điều hướng đến trang chi tiết bài viết
-  void _navigateToPostDetail(PostModel post) async {
-    // Thêm hiệu ứng haptic
-    HapticFeedback.selectionClick();
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => InlineForumPost(post: post),
-      ),
-    );
-
-    // Tải lại dữ liệu khi quay lại từ trang chi tiết
-    _loadData();
   }
 
   // Điều hướng đến trang thông báo
@@ -393,12 +284,6 @@ class _CommunityForumPageState extends State<CommunityForumPage>
 
     // Màu accent chính của app
     final accentColor = Color(0xFF5B6EF5); // Xanh dương sáng
-
-    // Màu nhấn mạnh
-    final emphasizeColor = Color(0xFFF86A6A); // Hồng/đỏ nhẹ
-
-    // Màu thành công
-    final successColor = Color(0xFF46BEA3); // Xanh lá
 
     return Scaffold(
       body: Container(

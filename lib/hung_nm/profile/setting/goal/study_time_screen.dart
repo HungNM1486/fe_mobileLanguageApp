@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:language_app/hung_nm/profile/setting/goal/goal_completion_screen.dart';
 import 'package:language_app/provider/study_plans_provider.dart';
 import 'package:language_app/provider/auth_provider.dart';
-import 'package:language_app/phu_nv/LoginSignup/login_screen.dart'; 
-
+import 'package:language_app/phu_nv/LoginSignup/login_screen.dart';
 
 class StudyTimeScreen extends StatefulWidget {
   final String goal;
@@ -82,7 +81,8 @@ class _StudyTimeScreenState extends State<StudyTimeScreen> {
     await provider.fetchStudyPlan(context);
     if (provider.studyPlan != null) {
       setState(() {
-        _selectedStudyTime = _mapStudyTimeSlotToStudyTime(provider.studyPlan!.studyTimeSlot);
+        _selectedStudyTime =
+            _mapStudyTimeSlotToStudyTime(provider.studyPlan!.studyTimeSlot);
       });
     }
   }

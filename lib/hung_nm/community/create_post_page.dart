@@ -26,7 +26,6 @@ class _CreatePostPageState extends State<CreatePostPage>
 
   // Form data
   List<String> _topics = [];
-  bool _isAnonymous = false;
   bool _isSubmitting = false;
   List<File> _selectedImages = [];
   int? _selectedLanguageId;

@@ -413,11 +413,6 @@ class _ForumPostCardState extends State<ForumPostCard>
     final pix = size.width / 375;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    // Màu cho card dựa trên dark mode
-    final cardColor = isDarkMode
-        ? Color(0xFF2A2D3E) // Màu tối cho dark mode
-        : Colors.white;
-
     // Màu chữ dựa trên dark mode
     final textColor = isDarkMode ? Colors.white : Colors.black87;
 

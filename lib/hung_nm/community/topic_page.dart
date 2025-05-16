@@ -27,7 +27,6 @@ class _TopicPageState extends State<TopicPage> {
   int _currentPage = 1;
   final int _limit = 10;
   bool _hasMore = true;
-  bool _isFollowing = false;
 
   @override
   void initState() {
@@ -126,8 +125,6 @@ class _TopicPageState extends State<TopicPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -192,8 +189,6 @@ class _TopicPageState extends State<TopicPage> {
 
   // Widget hiển thị một bài viết
   Widget _buildPostCard(PostModel post) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return ForumPostCard(
       post: post,
       expandable: true,

@@ -745,7 +745,7 @@ class _EditPostPageState extends State<EditPostPage>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF4B6CB7).withOpacity(0.25),
+            color: const Color(0xFF4B6CB7).withAlpha(64), // 0.25 * 255 = 63.75 ≈ 64
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -756,8 +756,8 @@ class _EditPostPageState extends State<EditPostPage>
         child: InkWell(
           onTap: _isSubmitting ? null : _saveChanges,
           borderRadius: BorderRadius.circular(16),
-          splashColor: Colors.white.withOpacity(0.2),
-          highlightColor: Colors.white.withOpacity(0.1),
+          splashColor: Colors.white.withAlpha(77), // 0.3 * 255 ≈ 77
+          highlightColor: Colors.white.withAlpha(51), // 0.2 * 255 ≈ 51
           child: Center(
             child: _isSubmitting
                 ? SizedBox(
