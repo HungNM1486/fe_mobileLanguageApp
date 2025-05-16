@@ -64,31 +64,57 @@ class NotificationModel {
 
   // Return appropriate icon based on notification type
   IconData get icon {
-    switch (type) {
+    switch (type.toLowerCase()) {
       case 'comment':
-        return Icons.comment;
+        return Icons.chat_bubble_outline;
+      case 'like':
+        return Icons.favorite;
       case 'achievement':
         return Icons.emoji_events;
       case 'reminder':
         return Icons.alarm;
+      case 'warning':
+        return Icons.warning_amber;
+      case 'update':
+        return Icons.system_update;
+      case 'message':
+        return Icons.message_outlined;
+      case 'promotion':
+        return Icons.local_offer;
       case 'system':
-      default:
         return Icons.notifications;
+      case 'info':
+        return Icons.info_outline;
+      default:
+        return Icons.notifications_none;
     }
   }
 
   // Return appropriate color based on notification type
   Color get color {
-    switch (type) {
+    switch (type.toLowerCase()) {
       case 'comment':
-        return Colors.green;
+        return Color(0xFF4CAF50); // Green
+      case 'like':
+        return Color(0xFFF44336); // Red
       case 'achievement':
-        return Colors.amber;
+        return Color(0xFFFFB300); // Amber
       case 'reminder':
-        return Colors.blue;
+        return Color(0xFF2196F3); // Blue
+      case 'warning':
+        return Color(0xFFFF9800); // Orange
+      case 'update':
+        return Color(0xFF673AB7); // Deep Purple
+      case 'message':
+        return Color(0xFF00BCD4); // Cyan
+      case 'promotion':
+        return Color(0xFFE91E63); // Pink
       case 'system':
+        return Color(0xFF9C27B0); // Purple
+      case 'info':
+        return Color(0xFF607D8B); // Blue Grey
       default:
-        return Colors.purple;
+        return Color(0xFF9E9E9E); // Grey
     }
   }
 
