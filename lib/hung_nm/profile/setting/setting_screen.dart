@@ -12,6 +12,7 @@ import 'support_screen.dart';
 import 'about_screen.dart';
 import 'widgets/logout_dialog.dart';
 import 'package:language_app/widget/top_bar.dart';
+import 'package:language_app/hung_nm/community/user_reports_screen.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -296,6 +297,20 @@ class SettingScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const SupportScreen()));
+            },
+            pix: pix,
+          ),
+          _buildSettingItem(
+            context,
+            icon: Icons.report_outlined,
+            title: "Báo cáo của tôi",
+            subtitle: "Xem trạng thái các báo cáo đã gửi",
+            iconColor: Colors.orange,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UserReportsScreen()));
             },
             pix: pix,
           ),

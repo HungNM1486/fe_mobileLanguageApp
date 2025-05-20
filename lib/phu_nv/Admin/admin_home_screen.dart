@@ -2,17 +2,101 @@ import 'package:flutter/material.dart';
 import 'package:language_app/phu_nv/Admin/language_screen.dart';
 import 'package:language_app/phu_nv/Admin/topic_manager.dart';
 import 'package:language_app/phu_nv/Admin/vocabulary_management_screen.dart';
+import 'package:language_app/phu_nv/Admin/report_management_screen.dart';
 import 'package:language_app/provider/auth_provider.dart';
+import 'package:language_app/provider/user_provider.dart';
 import 'package:language_app/widget/top_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:language_app/utils/toast_helper.dart';
+import 'package:language_app/phu_nv/home_screen.dart';
 
-class AdminScreen extends StatelessWidget {
+class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AdminScreen> createState() => _AdminScreenState();
+}
+
+class _AdminScreenState extends State<AdminScreen> {
+  bool _isLoading = true;
+  bool _isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAdminPermission();
+  }
+
+  Future<void> _checkAdminPermission() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      await userProvider.getUserInfo(context);
+
+      if (userProvider.user == null || userProvider.user!.role != 'admin') {
+        ToastHelper.showError(context, 'Bạn không có quyền truy cập trang này');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Homescreen()),
+        );
+        return;
+      }
+
+      setState(() {
+        _isAdmin = true;
+        _isLoading = false;
+      });
+    } catch (e) {
+      ToastHelper.showError(context, 'Đã xảy ra lỗi: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final pix = size.width / 375;
+
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (!_isAdmin) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 80, color: Colors.red),
+              SizedBox(height: 16),
+              Text(
+                'Bạn không có quyền truy cập',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Homescreen()),
+                  );
+                },
+                child: Text('Quay về trang chủ'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       body: Container(
@@ -79,7 +163,8 @@ class AdminScreen extends StatelessWidget {
                     size: 20,
                   ),
                   onPressed: () {
-                    Provider.of<AuthProvider>(context, listen: false).logout(context);
+                    Provider.of<AuthProvider>(context, listen: false)
+                        .logout(context);
                     Navigator.pop(context);
                   },
                 ),
@@ -170,6 +255,20 @@ class AdminScreen extends StatelessWidget {
                       color: Colors.red,
                       onTap: () {
                         // Navigator.push đến trang quản lý thông báo
+                      },
+                    ),
+                    _buildAdminMenuItem(
+                      context,
+                      title: "Quản lý báo cáo",
+                      icon: Icons.report_problem,
+                      color: Colors.amber,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReportManagementScreen(),
+                          ),
+                        );
                       },
                     ),
                   ],

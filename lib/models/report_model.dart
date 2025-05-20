@@ -1,46 +1,57 @@
+import 'package:flutter/foundation.dart';
+
 class ReportModel {
-  String? id;
-  String? postId;
-  String? userId;
-  String? reason;
-  String? description;
-  bool? isResolved;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  String? userName;
-  String? userAvatar;
-  String? postTitle;
+  final String? id;
+  final String? postId;
+  final String? userId;
+  final String reason;
+  final String? description;
+  bool isResolved;
+  final String? userName;
+  final String? userAvatar;
+  final DateTime createdAt;
 
   ReportModel({
     this.id,
-    this.postId,
-    this.userId,
-    this.reason,
+    required this.postId,
+    required this.userId,
+    required this.reason,
     this.description,
-    this.isResolved,
-    this.createdAt,
-    this.updatedAt,
+    this.isResolved = false,
     this.userName,
     this.userAvatar,
-    this.postTitle,
-  });
+    DateTime? createdAt,
+  }) : this.createdAt = createdAt ?? DateTime.now();
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
-    return ReportModel(
-      id: json['id']?.toString(),
-      postId: json['postId']?.toString(),
-      userId: json['userId']?.toString(),
-      reason: json['reason'],
-      description: json['description'],
-      isResolved: json['isResolved'],
-      createdAt:
-          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      updatedAt:
-          json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      userName: json['userName'],
-      userAvatar: json['userAvatar'],
-      postTitle: json['postTitle'],
-    );
+    try {
+      return ReportModel(
+        id: json['id']?.toString(),
+        postId: json['postId']?.toString(),
+        userId: json['userId']?.toString(),
+        reason: json['reason'] ?? 'other',
+        description: json['description'],
+        isResolved: json['isResolved'] ?? false,
+        userName: json['user'] != null
+            ? json['user']['firstName'] + ' ' + json['user']['lastName']
+            : null,
+        userAvatar: json['user'] != null ? json['user']['avatar'] : null,
+        createdAt: json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
+      );
+    } catch (e) {
+      debugPrint('Error parsing ReportModel: $e');
+      // Fallback to a default model in case of parsing error
+      return ReportModel(
+        id: json['id']?.toString(),
+        postId: json['postId']?.toString() ?? '0',
+        userId: json['userId']?.toString() ?? '0',
+        reason: 'other',
+        isResolved: false,
+        createdAt: DateTime.now(),
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -51,11 +62,6 @@ class ReportModel {
       'reason': reason,
       'description': description,
       'isResolved': isResolved,
-      'createdAt': createdAt?.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
-      'userName': userName,
-      'userAvatar': userAvatar,
-      'postTitle': postTitle,
     };
   }
 }

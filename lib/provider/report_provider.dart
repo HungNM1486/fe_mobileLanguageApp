@@ -54,6 +54,9 @@ class ReportProvider with ChangeNotifier {
     try {
       final uri = Uri.parse("${baseUrl}post-reports?page=$page&limit=$limit");
 
+      debugPrint('🔍 Gửi request đến: $uri');
+      debugPrint('🔑 Token: $token');
+
       final response = await http.get(
         uri,
         headers: {
@@ -61,6 +64,9 @@ class ReportProvider with ChangeNotifier {
           'Authorization': 'Bearer $token',
         },
       );
+
+      debugPrint('📊 Status code: ${response.statusCode}');
+      debugPrint('📄 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -71,7 +77,7 @@ class ReportProvider with ChangeNotifier {
               try {
                 return ReportModel.fromJson(e);
               } catch (parseError) {
-                debugPrint('Lỗi khi phân tích báo cáo: $parseError');
+                debugPrint('❌ Lỗi khi phân tích báo cáo: $parseError');
                 return null;
               }
             })
@@ -87,7 +93,7 @@ class ReportProvider with ChangeNotifier {
         return false;
       }
     } catch (e) {
-      debugPrint('Error fetching all reports: $e');
+      debugPrint('❌ Error fetching all reports: $e');
       _isLoading = false;
       notifyListeners();
       return false;
